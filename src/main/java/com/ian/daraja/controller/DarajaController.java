@@ -37,9 +37,4 @@ public class DarajaController {
             return ResponseEntity.badRequest().build();
         }
     }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> urRegister() throws IOException {
-        return new ResponseEntity<>(darajaAPI.registerUrl2(), HttpStatus.OK);
-    }
 }
