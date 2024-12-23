@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+mpesa:
+  daraja:
+    consumer-key: tGxhGHwgXiWl1hp8rRxPR3fJX7uICO1Vnw9DzRzN6JpU1Fx0
+    consumer-secret: dvZMtohSD6YW2pAUcmv5UzjRImjncVHqAULohCfQpt9TVFy60tDWN6dHAfT1i46n
+    grant-type: client_credentials
+    oauth-endpoint: https://sandbox.safaricom.co.ke/oauth/v1/generate
+    short-code: 600977
+    confirmation-url: https://2b81-2c0f-fe38-218a-7d19-6939-6c58-7a68-d208.ngrok-free.app/api/v1/daraja/confirmation
+    validation-url:  https://2b81-2c0f-fe38-218a-7d19-6939-6c58-7a68-d208.ngrok-free.app/api/v1/daraja/validation
+    response-type: Confirmed
+    url-registration-endpoint: https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
