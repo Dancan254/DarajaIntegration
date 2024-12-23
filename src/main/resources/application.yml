@@ -3,8 +3,8 @@ server:
 
 mpesa:
   daraja:
-    consumer-key: tGxhGHwgXiWl1hp8rRxPR3fJX7uICO1Vnw9DzRzN6JpU1Fx0
-    consumer-secret: dvZMtohSD6YW2pAUcmv5UzjRImjncVHqAULohCfQpt9TVFy60tDWN6dHAfT1i46n
+    consumer-key: 
+    consumer-secret: 
     grant-type: client_credentials
     oauth-endpoint: https://sandbox.safaricom.co.ke/oauth/v1/generate
     short-code: 600977
