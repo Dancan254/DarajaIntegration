@@ -2,15 +2,14 @@ package com.ian.daraja.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ian.daraja.config.MpesaConfig;
-import com.ian.daraja.dto.AccessTokenResponse;
-import com.ian.daraja.dto.RegisterUrlRequest;
-import com.ian.daraja.dto.RegisterUrlResponse;
+import com.ian.daraja.dto.*;
 import com.ian.daraja.utils.HelperUtility;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -38,7 +37,7 @@ public class DarajaApiImpl implements DarajaAPI {
         try {
             Response response = okHttpClient.newCall(request).execute();
             if (!response.isSuccessful()) {
-                log.error("Request failed with status code: {}", response.code());
+                //log.error("Request failed with status code: {}", response.code());
                 return null;
             }
             String responseBody = response.body() != null ? response.body().string() : "";
@@ -90,7 +89,6 @@ public class DarajaApiImpl implements DarajaAPI {
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 String errorBody = response.body() != null ? response.body().string() : "No error details provided";
-                log.error("Request failed with status code: {}", response.code());
                 log.error("Response body: {}", errorBody);
                 return null;
             }
@@ -106,6 +104,47 @@ public class DarajaApiImpl implements DarajaAPI {
             return null;
         }
     }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public C2BTransactionResponse simulateC2BTransaction(C2BTransactionRequest transactionRequest) throws IOException {
+        //get the access token
+        AccessTokenResponse accessToken = getAccessToken();
+        if (accessToken == null) {
+            log.error("Failed to retrieve access token");
+            return null;
+        }
+        // Prepare the request body
+       RequestBody requestBody = RequestBody.create(Objects.requireNonNull(HelperUtility.toJson(transactionRequest)), MediaType.get("application/json; charset=utf-8"));
+        // Prepare the request
+        Request request = new Request.Builder()
+                .url(mpesaConfig.getC2bTransactionEndpoint())
+                .post(requestBody)
+                .addHeader("Authorization", "Bearer " + accessToken.getAccessToken())
+                .addHeader("Content-Type", "application/json")
+                .build();
+        log.info("Sending C2B transaction request to: {}", mpesaConfig.getC2bTransactionEndpoint());
+        log.info("Request body: {}", requestBody);
+        // Execute the request and handle the response
+        try{
+            Response response = okHttpClient.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                String errorBody = response.body() != null ? response.body().string() : "No error details provided";
+                //log.error("Request failed with status code: {}", response.code());
+                log.error("Response body: {}", errorBody);
+                return null;
+            }
+            String responseBody = response.body() != null ? response.body().string() : "";
+            return objectMapper.readValue(responseBody, C2BTransactionResponse.class);
+        } catch (IOException e) {
+            log.error("Error occurred while simulating C2B transaction: {}", e.getMessage());
+            return null;
+        }
+    }
+
     /*
     * This method is used to register the URLs for the C2B API
     * I used this when the initial impl had hiccups
