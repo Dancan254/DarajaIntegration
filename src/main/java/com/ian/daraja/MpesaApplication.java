@@ -1,6 +1,7 @@
 package com.ian.daraja;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ian.daraja.dto.AcknowledgementResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +22,12 @@ public class MpesaApplication {
 	@Bean
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper();
+	}
+	@Bean
+	public AcknowledgementResponse getAcknowledgementResponse() {
+		AcknowledgementResponse acknowledgementResponse = new AcknowledgementResponse();
+		acknowledgementResponse.setResponseCode("0");
+		acknowledgementResponse.setResponseDescription("Accepted");
+		return acknowledgementResponse;
 	}
 }
