@@ -1,7 +1,6 @@
 package com.ian.daraja.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.ian.daraja.config.MpesaConfig;
 import com.ian.daraja.dto.AccessTokenResponse;
 import com.ian.daraja.dto.RegisterUrlRequest;
@@ -12,7 +11,6 @@ import okhttp3.*;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -48,7 +46,6 @@ public class DarajaApiImpl implements DarajaAPI {
                 log.error("Received empty response body");
                 return null;
             }
-
             log.info("Received response: {}", responseBody);
             return objectMapper.readValue(responseBody, AccessTokenResponse.class);
         } catch (IOException e) {
