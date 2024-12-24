@@ -26,7 +26,6 @@ public class MpesaApplication {
 	@Bean
 	public AcknowledgementResponse getAcknowledgementResponse() {
 		AcknowledgementResponse acknowledgementResponse = new AcknowledgementResponse();
-		acknowledgementResponse.setResponseCode("0");
 		acknowledgementResponse.setResponseDescription("Accepted");
 		return acknowledgementResponse;
 	}
