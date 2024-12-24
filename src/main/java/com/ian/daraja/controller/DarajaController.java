@@ -1,14 +1,8 @@
 package com.ian.daraja.controller;
 
-import com.ian.daraja.dto.AccessTokenResponse;
-import com.ian.daraja.dto.AcknowledgementResponse;
-import com.ian.daraja.dto.MpesaValidationResponse;
-import com.ian.daraja.dto.RegisterUrlResponse;
+import com.ian.daraja.dto.*;
 import com.ian.daraja.services.DarajaAPI;
-import com.ian.daraja.services.DarajaApiImpl;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +11,14 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/daraja")
-@RequiredArgsConstructor
 public class DarajaController {
     private final DarajaAPI darajaAPI;
     private final AcknowledgementResponse acknowledgementResponse;
+
+    public DarajaController(DarajaAPI darajaAPI, AcknowledgementResponse acknowledgementResponse){
+        this.acknowledgementResponse = acknowledgementResponse;
+        this.darajaAPI = darajaAPI;
+    }
     @GetMapping(value = "/access-token", produces = "application/json")
     public ResponseEntity<AccessTokenResponse> getAccessToken() {
         try{
@@ -45,6 +43,14 @@ public class DarajaController {
             log.info("Received validation request: {}", mpesaValidationResponse);
             return ResponseEntity.ok(acknowledgementResponse);
         } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @PostMapping(value = "c2b/simulate", produces = "application/json")
+    public ResponseEntity<C2BTransactionResponse> simulateC2BTransaction(@RequestBody C2BTransactionRequest c2BTransactionRequest) {
+        try{
+            return ResponseEntity.ok(darajaAPI.simulateC2BTransaction(c2BTransactionRequest));
+        } catch (IOException e) {
             return ResponseEntity.badRequest().build();
         }
     }
