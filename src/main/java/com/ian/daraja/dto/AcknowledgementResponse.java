@@ -4,6 +4,5 @@ import lombok.Data;
 
 @Data
 public class AcknowledgementResponse {
-    private String ResponseCode;
     private String ResponseDescription;
 }
