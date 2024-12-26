@@ -145,6 +145,47 @@ public class DarajaApiImpl implements DarajaAPI {
         }
     }
 
+    /**
+     * @param b2CRequest
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public B2CResponse b2cPaymentRequest(B2CRequest b2CRequest) throws IOException {
+        // Get the access token
+        AccessTokenResponse accessToken = getAccessToken();
+        if (accessToken == null) {
+            log.error("Failed to retrieve access token");
+            return null;
+        }
+        // Prepare the request body
+        RequestBody requestBody = RequestBody.create(Objects.requireNonNull(HelperUtility.toJson(b2CRequest)), MediaType.get("application/json; charset=utf-8"));
+        // Prepare the request
+        Request request = new Request.Builder()
+                .url(mpesaConfig.getB2cTransactionEndpoint())
+                .post(requestBody)
+                .addHeader("Authorization", "Bearer " + accessToken.getAccessToken())
+                .addHeader("Content-Type", "application/json")
+                .build();
+        log.info("Sending B2C payment request to: {}", mpesaConfig.getB2cTransactionEndpoint());
+        log.info("Request body: {}", requestBody);
+        // Execute the request and handle the response
+        try {
+            Response response = okHttpClient.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                String errorBody = response.body() != null ? response.body().string() : "No error details provided";
+                log.error("Request failed with status code: {}", response.code());
+                log.error("Response body: {}", errorBody);
+                return null;
+            }
+            String responseBody = response.body() != null ? response.body().string() : "";
+            return objectMapper.readValue(responseBody, B2CResponse.class);
+        } catch (IOException e) {
+            log.error("Error occurred while making B2C payment request: {}", e.getMessage());
+            return null;
+        }
+    }
+
     /*
     * This method is used to register the URLs for the C2B API
     * I used this when the initial impl had hiccups
