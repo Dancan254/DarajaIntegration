@@ -18,6 +18,7 @@ public class MpesaConfig {
     private String validationUrl;
     private String urlRegistrationEndpoint;
     private String c2bTransactionEndpoint;
+    private String b2cTransactionEndpoint;
 
     public String toString() {
         return "MpesaConfig{" +
