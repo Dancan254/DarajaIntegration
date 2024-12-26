@@ -183,6 +183,45 @@ public class DarajaApiImpl implements DarajaAPI {
         }
     }
 
+    /**
+     * @param stkPushRequest
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public StkPushResponse stkPush(StkPushRequest stkPushRequest) throws IOException {
+        AccessTokenResponse accessToken = getAccessToken();
+        if (accessToken == null) {
+            log.error("Failed to retrieve access token");
+            return null;
+        }
+        RequestBody requestBody = RequestBody.create(Objects.requireNonNull(HelperUtility.toJson(stkPushRequest)),
+                MediaType.get("application/json; charset=utf-8"));
+
+        Request request = new Request.Builder()
+                .url(mpesaConfig.getStkPushEndpoint())
+                .post(requestBody)
+                .addHeader("Authorization", "Bearer " + accessToken.getAccessToken())
+                .addHeader("Content-Type", "application/json")
+                .build();
+        log.info("Sending STK push request to: {}", mpesaConfig.getStkPushEndpoint());
+        log.info("Request body: {}", requestBody);
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                String errorBody = response.body() != null ? response.body().string() : "No error details provided";
+                log.error("Request failed with status code: {}", response.code());
+                log.error("Response body: {}", errorBody);
+                return null;
+            }
+            String responseBody = response.body() != null ? response.body().string() : "";
+            return objectMapper.readValue(responseBody, StkPushResponse.class);
+        } catch (IOException e) {
+            log.error("Error occurred while making STK push request: {}", e.getMessage());
+            return null;
+        }
+    }
+
+
     /*
     * This method is used to register the URLs for the C2B API
     * I used this when the initial impl had hiccups
