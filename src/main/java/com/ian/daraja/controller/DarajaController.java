@@ -62,4 +62,12 @@ public class DarajaController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PostMapping(value = "stk/push", produces = "application/json")
+    public ResponseEntity<StkPushResponse> stkPush(@RequestBody StkPushRequest stkPushRequest) {
+        try{
+            return ResponseEntity.ok(darajaAPI.stkPush(stkPushRequest));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
