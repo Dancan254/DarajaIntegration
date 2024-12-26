@@ -34,8 +34,7 @@ public class DarajaApiImpl implements DarajaAPI {
                 .build();
         log.info("Sending request to URL: {}", url);
         log.info("Authorization header: Basic {}", encodedCredentials);
-        try {
-            Response response = okHttpClient.newCall(request).execute();
+        try(Response response = okHttpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 //log.error("Request failed with status code: {}", response.code());
                 return null;
@@ -129,8 +128,7 @@ public class DarajaApiImpl implements DarajaAPI {
         log.info("Sending C2B transaction request to: {}", mpesaConfig.getC2bTransactionEndpoint());
         log.info("Request body: {}", requestBody);
         // Execute the request and handle the response
-        try{
-            Response response = okHttpClient.newCall(request).execute();
+        try(Response response = okHttpClient.newCall(request).execute()){
             if (!response.isSuccessful()) {
                 String errorBody = response.body() != null ? response.body().string() : "No error details provided";
                 //log.error("Request failed with status code: {}", response.code());
