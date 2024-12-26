@@ -170,8 +170,7 @@ public class DarajaApiImpl implements DarajaAPI {
         log.info("Sending B2C payment request to: {}", mpesaConfig.getB2cTransactionEndpoint());
         log.info("Request body: {}", requestBody);
         // Execute the request and handle the response
-        try {
-            Response response = okHttpClient.newCall(request).execute();
+        try(Response response = okHttpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 String errorBody = response.body() != null ? response.body().string() : "No error details provided";
                 log.error("Request failed with status code: {}", response.code());
