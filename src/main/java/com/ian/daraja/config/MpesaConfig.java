@@ -19,6 +19,7 @@ public class MpesaConfig {
     private String urlRegistrationEndpoint;
     private String c2bTransactionEndpoint;
     private String b2cTransactionEndpoint;
+    private String stkPushEndpoint;
 
     public String toString() {
         return "MpesaConfig{" +
