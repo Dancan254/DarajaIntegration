@@ -54,4 +54,12 @@ public class DarajaController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PostMapping(value = "b2c/payment-request", produces = "application/json")
+    public ResponseEntity<B2CResponse> b2cPaymentRequest(@RequestBody B2CRequest b2CRequest) {
+        try{
+            return ResponseEntity.ok(darajaAPI.b2cPaymentRequest(b2CRequest));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
