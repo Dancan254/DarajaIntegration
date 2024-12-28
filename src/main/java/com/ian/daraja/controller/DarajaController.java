@@ -70,4 +70,24 @@ public class DarajaController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PostMapping(value = "stk/push/fallback", produces = "application/json")
+    public ResponseEntity<AcknowledgementResponse> stkPushFallback(@RequestBody StkPushCallback stkPushCallback) {
+        try {
+            log.info("Received STK Push callback: {}", stkPushCallback);
+
+            if (stkPushCallback.getResultCode() == 1032) {
+                log.info("User canceled the STK Push request.");
+                // Handle the cancellation logic here
+            } else {
+                log.info("STK Push request completed with result code: {}", stkPushCallback.getResultCode());
+                // Handle other result codes here
+            }
+
+            return ResponseEntity.ok(acknowledgementResponse);
+        } catch (Exception e) {
+            log.error("Error processing STK Push callback: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
