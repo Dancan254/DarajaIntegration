@@ -2,6 +2,7 @@ package com.ian.daraja.controller;
 
 import com.ian.daraja.dto.*;
 import com.ian.daraja.services.DarajaAPI;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class DarajaController {
     }
 
     @PostMapping(value = "/validation", produces = "application/json")
-    public ResponseEntity<AcknowledgementResponse> validation(@RequestBody MpesaValidationResponse mpesaValidationResponse) {
+    public ResponseEntity<AcknowledgementResponse> validation(@Valid @RequestBody MpesaValidationResponse mpesaValidationResponse) {
         try{
             log.info("Received validation request: {}", mpesaValidationResponse);
             return ResponseEntity.ok(acknowledgementResponse);
@@ -46,8 +47,19 @@ public class DarajaController {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PostMapping(value = "/confirmation", produces = "application/json")
+    public ResponseEntity<String> handleConfirmation(@Valid @RequestBody ConfirmationRequest confirmationRequest) {
+        try {
+            log.info("Received confirmation request: {}", confirmationRequest);
+            return ResponseEntity.ok("Confirmation received successfully");
+        } catch (Exception e) {
+            log.error("Error processing confirmation request: {}", e.getMessage());
+            return ResponseEntity.badRequest().body("Error processing confirmation request");
+        }
+    }
+
     @PostMapping(value = "c2b/simulate", produces = "application/json")
-    public ResponseEntity<C2BTransactionResponse> simulateC2BTransaction(@RequestBody C2BTransactionRequest c2BTransactionRequest) {
+    public ResponseEntity<C2BTransactionResponse> simulateC2BTransaction(@Valid @RequestBody C2BTransactionRequest c2BTransactionRequest) {
         try{
             return ResponseEntity.ok(darajaAPI.simulateC2BTransaction(c2BTransactionRequest));
         } catch (IOException e) {
@@ -63,7 +75,7 @@ public class DarajaController {
         }
     }
     @PostMapping(value = "stk/push", produces = "application/json")
-    public ResponseEntity<StkPushResponse> stkPush(@RequestBody StkPushRequest stkPushRequest) {
+    public ResponseEntity<StkPushResponse> stkPush(@Valid @RequestBody StkPushRequest stkPushRequest) {
         try{
             return ResponseEntity.ok(darajaAPI.stkPush(stkPushRequest));
         } catch (IOException e) {
@@ -71,19 +83,16 @@ public class DarajaController {
         }
     }
 
-    @PostMapping(value = "stk/push/fallback", produces = "application/json")
-    public ResponseEntity<AcknowledgementResponse> stkPushFallback(@RequestBody StkPushCallback stkPushCallback) {
+    @PostMapping(value = "stk/push/callback", produces = "application/json")
+    public ResponseEntity<AcknowledgementResponse> stkPushFallback(@Valid @RequestBody StkPushCallback stkPushCallback) {
         try {
             log.info("Received STK Push callback: {}", stkPushCallback);
 
             if (stkPushCallback.getResultCode() == 1032) {
                 log.info("User canceled the STK Push request.");
-                // Handle the cancellation logic here
             } else {
                 log.info("STK Push request completed with result code: {}", stkPushCallback.getResultCode());
-                // Handle other result codes here
             }
-
             return ResponseEntity.ok(acknowledgementResponse);
         } catch (Exception e) {
             log.error("Error processing STK Push callback: {}", e.getMessage());
