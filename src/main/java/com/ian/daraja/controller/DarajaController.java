@@ -83,7 +83,7 @@ public class DarajaController {
         }
     }
 
-    @PostMapping(value = "stk/push/callback", produces = "application/json")
+    @PostMapping(value = "stkpush/callback", produces = "application/json")
     public ResponseEntity<AcknowledgementResponse> stkPushFallback(@Valid @RequestBody StkPushCallback stkPushCallback) {
         try {
             log.info("Received STK Push callback: {}", stkPushCallback);
