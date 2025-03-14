@@ -5,7 +5,7 @@ import com.ian.daraja.dto.*;
 import java.io.IOException;
 
 public interface DarajaAPI {
-    AccessTokenResponse getAccessToken();
+    AccessTokenResponse generateAccessToken();
 
     RegisterUrlResponse registerUrl();
     C2BTransactionResponse simulateC2BTransaction(C2BTransactionRequest c2BTransactionRequest) throws IOException;
