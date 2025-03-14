@@ -15,11 +15,6 @@ public class MpesaApplication {
 	}
 
 	@Bean
-	public OkHttpClient okHttpClient() {
-		return new OkHttpClient();
-	}
-
-	@Bean
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper();
 	}
