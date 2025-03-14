@@ -23,7 +23,7 @@ public class DarajaController {
     @GetMapping(value = "/access-token", produces = "application/json")
     public ResponseEntity<AccessTokenResponse> getAccessToken() {
         try{
-            return ResponseEntity.ok(darajaAPI.getAccessToken());
+            return ResponseEntity.ok(darajaAPI.generateAccessToken());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
